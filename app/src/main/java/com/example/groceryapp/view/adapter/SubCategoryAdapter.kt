@@ -31,8 +31,6 @@ class SubCategoryAdapter (
 
     override fun getItemCount(): Int  = products.size
 
-
-    //how do you know it is going to be recycler.viewHolder or when you are extending subCategoryAdapter
     inner class ViewHolder(private val binding: SubCategoryItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: Product) {
             binding.apply {

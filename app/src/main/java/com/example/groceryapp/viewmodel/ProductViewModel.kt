@@ -1,51 +1,54 @@
 package com.example.groceryapp.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.groceryapp.model.data.local.*
+import com.example.groceryapp.utils.BaseViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 
-class ProductViewModel(application: Application) : AndroidViewModel(application) {
+class ProductViewModel(private val repository: AppRepository) : BaseViewModel() {
 
-    private val productDao: ProductDao
-    private val cartItemDao: CartItemDao
-    private val repository: ProductRepository
+    private val _itemsList = MutableLiveData<List<Product>>()
+    val itemsList: LiveData<List<Product>> = _itemsList
 
-    val allProducts: LiveData<List<Product>>
-
-    val allCartItems: LiveData<List<CartItem>>
-
-    init {
-        val database = AppDatabase.getInstance(application)
-        productDao = database.productDao()
-        cartItemDao = database.cartItemDao()
-        repository = ProductRepository(productDao, cartItemDao)
-        allProducts = repository.allProducts
-        allCartItems = repository.allCartItems
+    fun getProductForSubCategory(subCategoryId : String){
+        compositeDisposable.add(
+            repository.getProductForSubCategory(subCategoryId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    {
+                        response ->
+                        _itemsList.value = response
+                    } , {
+                        Log.e(
+                            "CategoryViewModel",
+                            "Subcategory failed : ${it.message}"
+                        )
+                    }
+                )
+        )
     }
 
-    fun getProductById(productId: Int): LiveData<Product> {
-        return repository.getProductById(productId)
-    }
-
-    fun insertOrUpdateCartItem(cartItem: CartItem) {
+    fun insertOrUpdateCartItem(cartItem: Product){
         viewModelScope.launch {
-            repository.insertOrUpdateCartItem(cartItem)
+            updateItem(repository.updateCart(cartItem))
         }
     }
 
-    fun deleteCartItem(productId: Int) {
-        viewModelScope.launch {
-            repository.deleteCartItem(productId)
-        }
-    }
-
-    fun deleteAllCartItems() {
-        viewModelScope.launch {
-            repository.deleteAllCartItems()
-        }
+    private fun updateItem(cartItem: Product) {
+        _itemsList.value?.indexOfFirst{ it.productId == cartItem.productId }
+            ?.takeIf { it > -1 }?.also {
+                _itemsList.value = _itemsList.value?.toMutableList().apply {
+                    this?.set(it,cartItem)
+                }
+            }
     }
 }
 

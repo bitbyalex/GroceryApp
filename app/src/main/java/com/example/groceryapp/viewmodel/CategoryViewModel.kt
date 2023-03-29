@@ -22,7 +22,6 @@ class CategoryViewModel(private val apiService: ApiService) : BaseViewModel()  {
     val itemsList : LiveData<List<Product>> = _itemsList
     var products = MutableLiveData<List<Product>>()
 
-    private val compositeDisposable = CompositeDisposable()
 
     fun getCategories() {
         compositeDisposable.add(

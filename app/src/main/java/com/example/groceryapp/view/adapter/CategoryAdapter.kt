@@ -48,4 +48,3 @@ class CategoryAdapter(private var categoryList: List<Data>) :
         fun onClick(category: Data)
     }
 }
-

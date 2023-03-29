@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.groceryapp.model.data.ApiService
 import com.example.groceryapp.model.data.RetrofitBuilder
 import com.example.groceryapp.viewmodel.CategoryViewModel
+import com.example.groceryapp.viewmodel.SearchViewModel
 
 class CommonViewModelFactory(): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
@@ -12,6 +13,7 @@ class CommonViewModelFactory(): ViewModelProvider.Factory {
             .create(ApiService::class.java)
         return when(modelClass) {
             CategoryViewModel::class.java -> CategoryViewModel(api) as T
+            SearchViewModel::class.java -> SearchViewModel(api) as T
             else -> throw Throwable("Unsupported view model")
         }
     }
