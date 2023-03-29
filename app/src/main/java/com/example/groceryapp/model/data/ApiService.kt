@@ -12,8 +12,7 @@ interface ApiService {
 
     @POST("auth/login")
     fun login(
-        @Query("email") email: String,
-        @Query("password") password: String
+        @Body data: LoginData
     ): Single<LoginResponse>
 
     @POST("auth/register")

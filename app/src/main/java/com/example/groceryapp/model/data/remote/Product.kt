@@ -1,5 +1,8 @@
 package com.example.groceryapp.model.data.remote
 
+import androidx.room.Entity
+
+@Entity(tableName = "Cart")
 data class Product(
     val __v: Int,
     val _id: String,

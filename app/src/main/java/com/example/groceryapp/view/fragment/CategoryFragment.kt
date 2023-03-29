@@ -43,12 +43,19 @@ class CategoryFragment : Fragment(), CategoryAdapter.Listener{
             adapter = categoryAdapter
         }
 
-
         categoryViewModel.categoryList.observe(viewLifecycleOwner) { categoryList ->
             categoryAdapter.setCategories(categoryList)
         }
 
         categoryViewModel.getCategories()
+
+        binding.btnSearch.setOnClickListener{
+            val searchFragment = SearchFragment.newInstance(binding.edtSearch.text.toString())
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container,searchFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
     }
 
     override fun onDestroyView() {
