@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.groceryapp.MyApplication
 import com.example.groceryapp.R
 import com.example.groceryapp.databinding.FragmentCategoryBinding
 import com.example.groceryapp.model.data.remote.Data
@@ -19,7 +21,13 @@ class CategoryFragment : Fragment(), CategoryAdapter.Listener{
 
     private var _binding: FragmentCategoryBinding? = null
     private val binding get() = _binding!!
-    private lateinit var categoryViewModel: CategoryViewModel
+    private val categoryViewModel: CategoryViewModel by viewModels(
+        factoryProducer = {
+            CommonViewModelFactory(
+                (activity?.application as MyApplication)
+            )
+        }
+    )
     private lateinit var categoryAdapter: CategoryAdapter
 
 
@@ -34,7 +42,7 @@ class CategoryFragment : Fragment(), CategoryAdapter.Listener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        categoryViewModel = ViewModelProvider(this, CommonViewModelFactory())[CategoryViewModel::class.java]
+        //categoryViewModel = ViewModelProvider(this, CommonViewModelFactory())[CategoryViewModel::class.java]
         categoryAdapter = CategoryAdapter(emptyList())
         categoryAdapter.listener = this
 

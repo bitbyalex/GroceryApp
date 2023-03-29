@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.groceryapp.MyApplication
 import com.example.groceryapp.databinding.FragmentBeefComboBinding
 import com.example.groceryapp.databinding.FragmentFriedBinding
 import com.example.groceryapp.model.data.remote.Product
@@ -17,7 +19,11 @@ import com.example.groceryapp.viewmodel.CategoryViewModel
 
 class BeefComboFragment : Fragment() {
     private lateinit var binding: FragmentBeefComboBinding
-    private lateinit var viewModel: CategoryViewModel
+    private val categoryViewModel: CategoryViewModel by viewModels(factoryProducer = {
+        CommonViewModelFactory(
+            activity?.application as MyApplication
+        )
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,9 +36,9 @@ class BeefComboFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = ViewModelProvider(this, CommonViewModelFactory())[CategoryViewModel::class.java]
-        viewModel.getProductForSubCategory("10")
-        viewModel.itemsList.observe(viewLifecycleOwner) {
+        //viewModel = ViewModelProvider(this, CommonViewModelFactory())[CategoryViewModel::class.java]
+        categoryViewModel.getProductForSubCategory("10")
+        categoryViewModel.itemsList.observe(viewLifecycleOwner) {
             val list: MutableList<Product> = mutableListOf()
             for (i in it.indices) {
                 list.add(it[i])

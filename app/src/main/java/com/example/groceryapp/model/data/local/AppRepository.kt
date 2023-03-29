@@ -1,6 +1,5 @@
 package com.example.groceryapp.model.data.local
 
-import androidx.lifecycle.LiveData
 import com.example.groceryapp.model.data.ApiService
 import com.example.groceryapp.model.data.remote.LoginData
 import io.reactivex.Single

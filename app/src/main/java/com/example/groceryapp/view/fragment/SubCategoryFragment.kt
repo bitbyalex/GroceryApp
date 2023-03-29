@@ -1,18 +1,19 @@
 package com.example.groceryapp.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.example.groceryapp.MyApplication
 import com.example.groceryapp.R
 import com.example.groceryapp.databinding.FragmentSubCategoryBinding
 import com.example.groceryapp.model.data.remote.Data
 import com.example.groceryapp.utils.CommonViewModelFactory
 import com.example.groceryapp.view.adapter.CategoryAdapter
-import com.example.groceryapp.view.adapter.SubCategoryAdapter
 import com.example.groceryapp.view.adapter.subadapters.SubCategoryBeefAdapter
 import com.example.groceryapp.view.adapter.subadapters.SubCategoryChickenAdapter
 import com.example.groceryapp.view.adapter.subadapters.SubCategoryFruitsAdapter
@@ -23,7 +24,11 @@ class SubCategoryFragment : Fragment(), CategoryAdapter.Listener {
 
     private var _binding : FragmentSubCategoryBinding? = null
     private val binding get() = _binding!!
-    private lateinit var categoryViewModel: CategoryViewModel
+    private val categoryViewModel: CategoryViewModel by viewModels(factoryProducer = {
+        CommonViewModelFactory(
+            activity?.application as MyApplication
+        )
+    })
 
 
     override fun onCreateView(
@@ -34,6 +39,7 @@ class SubCategoryFragment : Fragment(), CategoryAdapter.Listener {
         return binding.root
     }
 
+    @SuppressLint("CommitTransaction")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -41,10 +47,10 @@ class SubCategoryFragment : Fragment(), CategoryAdapter.Listener {
         Log.e("SubCategory", "Category id: $categoryId")
 
 
-        categoryViewModel = ViewModelProvider(this, CommonViewModelFactory())[CategoryViewModel::class.java]
+        //categoryViewModel = ViewModelProvider(this, CommonViewModelFactory())[CategoryViewModel::class.java]
         categoryViewModel.getSubCategories(categoryId.toString())
         categoryViewModel.subCategoryList.observe(viewLifecycleOwner) {
-            Log.e("SubCategory", "${it.joinToString()}")
+            Log.e("SubCategory", it.joinToString())
             if (categoryId != null) {
                 when (categoryId.toInt()) {
                     1 -> {

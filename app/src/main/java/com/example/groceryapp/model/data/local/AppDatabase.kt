@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [Product::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
-    abstract fun productDao(): ProductDao
+    abstract fun productDao(): CartItemDao
 
     //abstract fun cartItemDao(): CartItemDao
 
